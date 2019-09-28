@@ -10,7 +10,7 @@ RUN tdnf install -y shadow gzip postgresql >> /dev/null\
     && mkdir -p /run/postgresql \
     && chown -R postgres:postgres /run/postgresql \
     && chmod 2777 /run/postgresql \
-    && mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PGDATA" \
+    && chown -R postgres:postgres /var/ && mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PGDATA" \
     && sed -i "s|#listen_addresses = 'localhost'.*|listen_addresses = '*'|g" /usr/share/postgresql/postgresql.conf.sample \
     && sed -i "s|#unix_socket_directories = '/tmp'.*|unix_socket_directories = '/run/postgresql'|g" /usr/share/postgresql/postgresql.conf.sample \
     && tdnf clean all
