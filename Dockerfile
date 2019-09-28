@@ -1,6 +1,7 @@
 FROM photon:2.0
 
 ENV PGDATA /var/lib/postgresql/data
+ENV POSTGRES_PASSWORD=root123
 
 RUN tdnf install -y shadow gzip postgresql >> /dev/null\
     && groupadd -r postgres --gid=999 \
@@ -18,11 +19,11 @@ RUN tdnf erase -y toybox && tdnf install -y util-linux net-tools
 
 VOLUME /var/lib/postgresql/data
 
-COPY ./make/photon/db/docker-entrypoint.sh /docker-entrypoint.sh
-COPY ./make/photon/db/docker-healthcheck.sh /docker-healthcheck.sh
-COPY ./make/photon/db/initial-notaryserver.sql /docker-entrypoint-initdb.d/
-COPY ./make/photon/db/initial-notarysigner.sql /docker-entrypoint-initdb.d/
-COPY ./make/photon/db/initial-registry.sql /docker-entrypoint-initdb.d/
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./docker-healthcheck.sh /docker-healthcheck.sh
+COPY ./initial-notaryserver.sql /docker-entrypoint-initdb.d/
+COPY ./initial-notarysigner.sql /docker-entrypoint-initdb.d/
+COPY ./initial-registry.sql /docker-entrypoint-initdb.d/
 RUN chown -R postgres:postgres /docker-entrypoint.sh /docker-healthcheck.sh /docker-entrypoint-initdb.d \
     && chmod u+x /docker-entrypoint.sh /docker-healthcheck.sh
 
