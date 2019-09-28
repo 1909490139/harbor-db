@@ -1,6 +1,6 @@
 FROM photon:2.0
 
-ENV PGDATA /var/lib/postgresql/data
+ENV PGDATA /var/data
 ENV POSTGRES_PASSWORD=root123
 
 RUN tdnf install -y shadow gzip postgresql >> /dev/null\
@@ -17,7 +17,7 @@ RUN tdnf install -y shadow gzip postgresql >> /dev/null\
 
 RUN tdnf erase -y toybox && tdnf install -y util-linux net-tools
 
-VOLUME /var/lib/postgresql/data
+VOLUME /var/data
 
 COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 COPY ./docker-healthcheck.sh /docker-healthcheck.sh
