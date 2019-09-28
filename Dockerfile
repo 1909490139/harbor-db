@@ -1,23 +1,9 @@
-FROM photon:2.0
+FROM postgres:9.6.10
 
-ENV PGDATA /var/data
+ENV PGDATA /var/lib/postgresql/data
 ENV POSTGRES_PASSWORD=root123
 
-RUN tdnf install -y shadow gzip postgresql >> /dev/null\
-    && groupadd -r postgres --gid=999 \
-    && useradd -m -r -g postgres --uid=999 postgres \
-    && mkdir -p /docker-entrypoint-initdb.d \
-    && mkdir -p /run/postgresql \
-    && chown -R postgres:postgres /run/postgresql \
-    && chmod 2777 /run/postgresql \
-    && chown -R postgres:postgres /var/ && mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PGDATA" \
-    && sed -i "s|#listen_addresses = 'localhost'.*|listen_addresses = '*'|g" /usr/share/postgresql/postgresql.conf.sample \
-    && sed -i "s|#unix_socket_directories = '/tmp'.*|unix_socket_directories = '/run/postgresql'|g" /usr/share/postgresql/postgresql.conf.sample \
-    && tdnf clean all
-
-RUN tdnf erase -y toybox && tdnf install -y util-linux net-tools
-
-VOLUME /var/data
+RUN mkdir -p /docker-entrypoint-initdb.d 
 
 COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 COPY ./docker-healthcheck.sh /docker-healthcheck.sh
