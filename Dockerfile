@@ -1,6 +1,7 @@
 FROM photon:2.0
 
 ENV PGDATA /var/lib/postgresql/data
+ENV POSTGRES_PASSWORD=root123
 
 RUN tdnf install -y shadow gzip postgresql >> /dev/null\
     && groupadd -r postgres --gid=999 \
