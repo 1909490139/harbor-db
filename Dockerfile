@@ -4,16 +4,31 @@ ENV PGDATA /var/lib/postgresql/data
 
 RUN tdnf install -y shadow gzip postgresql >> /dev/null\
     && groupadd -r postgres --gid=999 \
-    && useradd -m -r -g postgres --uid=999 postgres
+    && useradd -m -r -g postgres --uid=999 postgres \
+    && mkdir -p /docker-entrypoint-initdb.d \
+    && mkdir -p /run/postgresql \
+    && chown -R postgres:postgres /run/postgresql \
+    && chmod 2777 /run/postgresql \
+    && mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PGDATA" \
+    && sed -i "s|#listen_addresses = 'localhost'.*|listen_addresses = '*'|g" /usr/share/postgresql/postgresql.conf.sample \
+    && sed -i "s|#unix_socket_directories = '/tmp'.*|unix_socket_directories = '/run/postgresql'|g" /usr/share/postgresql/postgresql.conf.sample \
+    && tdnf clean all
 
 RUN tdnf erase -y toybox && tdnf install -y util-linux net-tools
 
 VOLUME /var/lib/postgresql/data
 
-COPY ./test.sh /docker-entrypoint.sh
-RUN chown -R postgres:postgres /docker-entrypoint.sh
+COPY ./test.sh /test.sh
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./docker-healthcheck.sh /docker-healthcheck.sh
+COPY ./initial-notaryserver.sql /docker-entrypoint-initdb.d/
+COPY ./initial-notarysigner.sql /docker-entrypoint-initdb.d/
+COPY ./initial-registry.sql /docker-entrypoint-initdb.d/
+RUN chown -R postgres:postgres /test.sh /docker-entrypoint.sh /docker-healthcheck.sh /docker-entrypoint-initdb.d \
+    && chmod u+x /docker-entrypoint.sh /docker-healthcheck.sh /test.sh
 
-CMD ["/docker-entrypoint.sh"]
+
+CMD ["/test.sh"]
 
 EXPOSE 5432
 USER postgres
