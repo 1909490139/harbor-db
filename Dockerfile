@@ -18,14 +18,13 @@ RUN tdnf erase -y toybox && tdnf install -y util-linux net-tools
 
 VOLUME /var/lib/postgresql/data
 
-COPY ./test.sh /test.sh
 COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 COPY ./docker-healthcheck.sh /docker-healthcheck.sh
 COPY ./initial-notaryserver.sql /docker-entrypoint-initdb.d/
 COPY ./initial-notarysigner.sql /docker-entrypoint-initdb.d/
 COPY ./initial-registry.sql /docker-entrypoint-initdb.d/
 RUN chown -R postgres:postgres /test.sh /docker-entrypoint.sh /docker-healthcheck.sh /docker-entrypoint-initdb.d \
-    && chmod u+x /docker-entrypoint.sh /docker-healthcheck.sh /test.sh
+    && chmod u+x /docker-entrypoint.sh /docker-healthcheck.sh 
 
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
