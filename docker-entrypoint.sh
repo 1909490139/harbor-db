@@ -26,7 +26,7 @@ file_env() {
 
 # look specifically for PG_VERSION, as it is expected in the DB dir
 if [ ! -s "$PGDATA/PG_VERSION" ]; then
-         /var/lib/postgresql/data/
+        mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PGDATA"
         file_env 'POSTGRES_INITDB_ARGS'
         if [ "$POSTGRES_INITDB_XLOGDIR" ]; then
                 export POSTGRES_INITDB_ARGS="$POSTGRES_INITDB_ARGS --xlogdir $POSTGRES_INITDB_XLOGDIR"
