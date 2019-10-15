@@ -107,5 +107,3 @@ EOSQL
         echo 'PostgreSQL init process complete; ready for start up.'
         echo
 fi
-
-postgres -D $PGDATA
