@@ -28,7 +28,8 @@ RUN chown -R postgres:postgres /test.sh /docker-entrypoint.sh /docker-healthchec
     && chmod u+x /docker-entrypoint.sh /docker-healthcheck.sh /test.sh
 
 
-CMD ["/test.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+HEALTHCHECK CMD ["/docker-healthcheck.sh"]
 
 EXPOSE 5432
 USER postgres
