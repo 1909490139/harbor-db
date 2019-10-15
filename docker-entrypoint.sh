@@ -101,8 +101,7 @@ EOSQL
                 echo
         done
 
-        PGUSER="${PGUSER:-postgres}" \
-        pg_ctl -D "$PGDATA" -m fast -w stop
+        PGUSER="${PGUSER:-postgres}" 
 
         echo
         echo 'PostgreSQL init process complete; ready for start up.'
